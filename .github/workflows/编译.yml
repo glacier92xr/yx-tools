@@ -3,8 +3,8 @@ name: Build All Platforms
 on:
   push:
     tags:
-      - 'v*'  # 当推送 v1.0.0 这样的 tag 时触发
-  workflow_dispatch:  # 也支持手动触发
+      - "v*" # 当推送 v1.0.0 这样的 tag 时触发
+  workflow_dispatch: # 也支持手动触发
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     strategy:
       matrix:
         include:
@@ -22,39 +22,39 @@ jobs:
             platform: windows
             arch: amd64
             ext: .exe
-            
+
           # Linux x64
           - os: ubuntu-latest
             platform: linux
             arch: amd64
-            ext: ''
-            
+            ext: ""
+
           # Linux ARM64
           - os: ubuntu-24.04-arm
             platform: linux
             arch: arm64
-            ext: ''
-            
+            ext: ""
+
           # macOS Intel
           - os: macos-15-intel
             platform: macos
             arch: amd64
-            ext: ''
-            
+            ext: ""
+
           # macOS Apple Silicon
           - os: macos-15
             platform: macos
             arch: arm64
-            ext: ''
+            ext: ""
 
     steps:
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 设置 Python 环境
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.9'
+          python-version: "3.14"
 
       - name: 安装依赖
         run: |
@@ -86,7 +86,7 @@ jobs:
         run: chmod +x dist/CloudflareSpeedTest-${{ matrix.platform }}-${{ matrix.arch }}
 
       - name: 上传构建产物
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: CloudflareSpeedTest-${{ matrix.platform }}-${{ matrix.arch }}
           path: dist/CloudflareSpeedTest-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.ext }}
@@ -101,13 +101,13 @@ jobs:
     permissions:
       contents: write
       packages: write
-    
+
     steps:
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 下载所有构建产物
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ./artifacts
 
@@ -115,7 +115,7 @@ jobs:
         run: ls -R ./artifacts
 
       - name: 创建 Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             artifacts/CloudflareSpeedTest-windows-amd64/CloudflareSpeedTest-windows-amd64.exe
@@ -128,14 +128,14 @@ jobs:
           generate_release_notes: true
           body: |
             ## 🚀 Cloudflare SpeedTest 跨平台版本发布
-            
+
             ### 📦 可执行文件
             - **Windows (x64)**: CloudflareSpeedTest-windows-amd64.exe
             - **Linux (x64)**: CloudflareSpeedTest-linux-amd64
             - **Linux (ARM64)**: CloudflareSpeedTest-linux-arm64
             - **macOS (Intel)**: CloudflareSpeedTest-macos-amd64
             - **macOS (Apple Silicon)**: CloudflareSpeedTest-macos-arm64
-            
+
             ### 🌟 功能特性
             - 🎯 内置 97 个全球数据中心机场码
             - 🌍 支持城市名称智能识别（如"香港"、"东京"）
@@ -143,7 +143,7 @@ jobs:
             - 🔧 完全自定义参数
             - 📊 自动生成测速报告
             - 🆕 **小白快速测试**：专为新手设计，只需输入3个数字
-            
+
             ### 🚀 使用方法
             1. 下载对应平台的可执行文件
             2. 双击运行（Windows）或赋予执行权限（Linux/macOS）
